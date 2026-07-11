@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { Icon } from 'svelte-icons-pack';
-	import { FaSolidPlay, FaSolidStop } from 'svelte-icons-pack/fa';
+	import {
+		FaSolidStop,
+		FaSolidVolumeHigh,
+		FaSolidVolumeLow,
+		FaSolidVolumeOff
+	} from 'svelte-icons-pack/fa';
 
 	let { data } = $props();
 
@@ -15,7 +20,7 @@
 
 	let isPlaying = $state('');
 	let shouldPlay = $state(false);
-	let value = $state(50);
+	let volumeValue = $state(50);
 
 	let currentPlayId = 0;
 
@@ -52,7 +57,7 @@
 
 		if (thisPlayId !== currentPlayId) return;
 
-		gainNode.gain.value = value / 100;
+		gainNode.gain.value = volumeValue / 100;
 
 		if (loop) {
 			loopBuffer = await loadAudio(loop);
@@ -105,100 +110,90 @@
 	}
 
 	function changeVolume(e: Event) {
-		value = Number((e.target as HTMLInputElement).value);
-		if (gainNode) gainNode.gain.value = value / 100;
+		volumeValue = Number((e.target as HTMLInputElement).value);
+		if (gainNode) gainNode.gain.value = volumeValue / 100;
 	}
 </script>
 
-<main class="flex flex-col gap-4 p-4 justify-center items-center">
-	<h1 class="text-2xl font-bold text-center">
-		{#if isPlaying != ''}
-			{isPlaying}
-		{/if}
-	</h1>
-	<input
-		type="range"
-		min="0"
-		max="100"
-		step="1"
-		class="w-64 items-center justify-center"
-		bind:value
-		oninput={changeVolume}
-	/>
-	<ul class="flex flex-wrap gap-4 justify-center">
+<main>
+	<ul class="flex flex-wrap gap-4 p-8 justify-center">
 		{#each data.playlist as album (album.name)}
-			<li class="flex items-center justify-between p-4 w-64 h-20 rounded-lg bg-blue-400">
-				<div>
+			<li>
+				<button
+					class="cursor-pointer shadow-[0_6px_0_#1e3a8a] transition-all duration-100 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] active:translate-y-1 active:shadow-[0_4px_0_#1e3a8a] p-4 w-xs h-20 rounded-lg bg-blue-400"
+					onclick={() => play(album.stealthIntro, album.stealthLoop, album.name + ' (Stealth)')}
+				>
 					<div class="font-medium">{album.name}</div>
 					<div class="text-xs uppercase font-semibold opacity-70">Stealth</div>
-				</div>
-				{#if isPlaying === album.name + ' Stealth'}
-					<button class="btn btn-square btn-ghost" onclick={() => stop()}
-						><Icon src={FaSolidStop} /></button
-					>
-				{:else}
-					<button
-						class="btn btn-square btn-ghost"
-						onclick={() => play(album.stealthIntro, album.stealthLoop, album.name + ' Stealth')}
-						><Icon src={FaSolidPlay} /></button
-					>
-				{/if}
+				</button>
 			</li>
 
-			<li class="flex items-center justify-between p-4 w-64 h-20 rounded-lg bg-blue-400">
-				<div>
+			<li>
+				<button
+					class="cursor-pointer shadow-[0_6px_0_#1e3a8a] transition-all duration-100 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] active:translate-y-1 active:shadow-[0_4px_0_#1e3a8a] p-4 w-xs h-20 rounded-lg bg-blue-400"
+					onclick={() => play(album.controlIntro, album.controlLoop, album.name + ' (Control)')}
+				>
 					<div class="font-medium">{album.name}</div>
 					<div class="text-xs uppercase font-semibold opacity-70">Control</div>
-				</div>
-				{#if isPlaying === album.name + ' Control'}
-					<button class="btn btn-square btn-ghost" onclick={() => stop()}
-						><Icon src={FaSolidStop} /></button
-					>
-				{:else}
-					<button
-						class="btn btn-square btn-ghost"
-						onclick={() => play(album.controlIntro, album.controlLoop, album.name + ' Control')}
-						><Icon src={FaSolidPlay} /></button
-					>
-				{/if}
+				</button>
 			</li>
 
-			<li class="flex items-center justify-between p-4 w-64 h-20 rounded-lg bg-blue-400">
-				<div>
+			<li>
+				<button
+					class="cursor-pointer shadow-[0_6px_0_#1e3a8a] transition-all duration-100 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] active:translate-y-1 active:shadow-[0_4px_0_#1e3a8a] p-4 w-xs h-20 rounded-lg bg-blue-400"
+					onclick={() =>
+						play(album.anticipationIntro, album.anticipationLoop, album.name + ' (Anticipation)')}
+				>
 					<div class="font-medium">{album.name}</div>
 					<div class="text-xs uppercase font-semibold opacity-70">Anticipation</div>
-				</div>
-				{#if isPlaying === album.name + ' Anticipation'}
-					<button class="btn btn-square btn-ghost" onclick={() => stop()}
-						><Icon src={FaSolidStop} /></button
-					>
-				{:else}
-					<button
-						class="btn btn-square btn-ghost"
-						onclick={() =>
-							play(album.anticipationIntro, album.anticipationLoop, album.name + ' Anticipation')}
-						><Icon src={FaSolidPlay} /></button
-					>
-				{/if}
+				</button>
 			</li>
 
-			<li class="flex items-center justify-between p-4 w-64 h-20 rounded-lg bg-blue-400">
-				<div>
+			<li>
+				<button
+					class="cursor-pointer shadow-[0_6px_0_#1e3a8a] transition-all duration-100 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] active:translate-y-1 active:shadow-[0_4px_0_#1e3a8a] p-4 w-xs h-20 rounded-lg bg-blue-400"
+					onclick={() => play(album.assaultIntro, album.assaultLoop, album.name + ' (Assault)')}
+				>
 					<div class="font-medium">{album.name}</div>
 					<div class="text-xs uppercase font-semibold opacity-70">Assault</div>
-				</div>
-				{#if isPlaying === album.name + ' Assault'}
-					<button class="btn btn-square btn-ghost" onclick={() => stop()}
-						><Icon src={FaSolidStop} /></button
-					>
-				{:else}
-					<button
-						class="btn btn-square btn-ghost"
-						onclick={() => play(album.assaultIntro, album.assaultLoop, album.name + ' Assault')}
-						><Icon src={FaSolidPlay} /></button
-					>
-				{/if}
+				</button>
 			</li>
 		{/each}
 	</ul>
+
+	<div class="grid grid-cols-3 items-center h-16 px-8 bg-blue-800 sticky bottom-0">
+		<h1 class="justify-self-start truncate text-xl font-bold">
+			{isPlaying}
+		</h1>
+
+		<div class="justify-self-center">
+			<button
+				class={`btn btn-square btn-ghost ${isPlaying == '' ? 'btn-disabled' : ''}`}
+				onclick={() => stop()}
+			>
+				<Icon src={FaSolidStop} />
+			</button>
+		</div>
+
+		<div class="justify-self-end flex gap-4 items-center">
+			<div class="flex gap-4 items-center">
+				{#if volumeValue === 0}
+					<Icon src={FaSolidVolumeOff} size="1.25em" />
+				{:else if volumeValue > 0 && volumeValue < 50}
+					<Icon src={FaSolidVolumeLow} size="1.25em" />
+				{:else if volumeValue >= 50}
+					<Icon src={FaSolidVolumeHigh} size="1.25em" />
+				{/if}
+				<input
+					type="range"
+					min="0"
+					max="100"
+					step="1"
+					class="slider w-32"
+					bind:value={volumeValue}
+					oninput={changeVolume}
+				/>
+			</div>
+		</div>
+	</div>
 </main>
